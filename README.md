@@ -1,4 +1,4 @@
-Video Recommendation Algorithm
+**Video Recommendation Algorithm**
 Overview
 This project aims to build a video recommendation system capable of suggesting personalized videos to users based on their interactions and preferences. The system utilizes a content-based filtering approach to recommend videos that are similar to those the user has already interacted with, leveraging metadata (such as view-to-like ratio, category, etc.) and user interaction data.
 
