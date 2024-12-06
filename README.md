@@ -1,141 +1,211 @@
-**Video Recommendation Algorithm**
-Overview
-This project aims to build a video recommendation system capable of suggesting personalized videos to users based on their interactions and preferences. The system utilizes a content-based filtering approach to recommend videos that are similar to those the user has already interacted with, leveraging metadata (such as view-to-like ratio, category, etc.) and user interaction data.
+Video Recommendation Algorithm Documentation
+1. Introduction
+The Video Recommendation Algorithm is designed to provide personalized video suggestions to users based on their interaction history. This system uses content-based filtering techniques to recommend videos similar to those a user has already interacted with (liked, watched, etc.).
 
-Key Features:
-Personalized video recommendations based on user interaction history.
-Use of cosine similarity to measure the similarity between videos.
-Optional hybrid model support (combining collaborative filtering and content-based filtering).
-Evaluation of recommendation performance with metrics like MAE and RMSE.
-Flexibility to handle cold-start problems, ensuring quality recommendations even for new users or items.
-Table of Contents
-Installation Instructions
-Project Structure
-Data Sources
-Usage
-Recommendation System Logic
-Evaluation Metrics
-Contributing
-License
-Installation Instructions
-To run this project, follow the steps below:
+Objectives:
+Recommend personalized videos to users based on their preferences and interactions.
+Handle cold-start problems for new users or new videos.
+Evaluate recommendation performance using metrics such as Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE).
+2. System Overview
+This recommendation algorithm employs a content-based filtering approach, which utilizes video metadata (e.g., category, view-to-like ratio) and user interaction data (e.g., user ID, video ID) to compute similarity between videos.
 
-Prerequisites
-You need to have the following installed:
+Key components of the system:
 
+Data Loading: Fetches data about videos and user interactions.
+Preprocessing: Cleans and transforms the data, such as encoding categories and normalizing numerical features.
+Cosine Similarity Calculation: Measures how similar two videos are using cosine similarity.
+Recommendation Generation: Based on similarity scores, recommends the most relevant videos to users.
+Evaluation: Measures the effectiveness of the recommendations with RMSE and MAE.
+3. Installation Instructions
+To run this project locally, follow these installation instructions:
+
+Requirements:
 Python 3.7 or higher
-pip (Python package installer)
-Setup Steps
-Clone the repository:
+pip (Python package manager)
+Steps:
+Clone the Repository:
 
 bash
 Copy code
 git clone https://github.com/yourusername/video-recommendation.git
 cd video-recommendation
-Create a virtual environment (optional but recommended):
+Set Up Virtual Environment (Optional):
 
 bash
 Copy code
 python -m venv venv
 source venv/bin/activate  # For Windows: venv\Scripts\activate
-Install required libraries:
+Install Dependencies:
 
 bash
 Copy code
 pip install -r requirements.txt
-Download datasets: You can either use the provided sample datasets or upload your own. The datasets should include user interaction data and video metadata.
+Prepare Data: Make sure you have the user_interactions.csv and video_metadata.csv files in the /data folder.
 
-Run the algorithm: After installing the dependencies and setting up the datasets, you can run the recommendation script by executing the following command:
+4. Data Sources
+User Interaction Data:
+This dataset contains information about which users have interacted with which videos. It includes:
 
-bash
-Copy code
-python main.py
-Project Structure
-The project is structured as follows:
-
-bash
-Copy code
-video-recommendation/
-│
-├── main.py                     # Main entry point for generating recommendations
-├── recommendation_model.py      # Contains the recommendation algorithm logic
-├── data/
-│   ├── user_interactions.csv   # Sample user interaction data
-│   └── video_metadata.csv      # Metadata of videos (category, view/like ratio, etc.)
-├── requirements.txt            # List of dependencies to install
-├── README.md                   # Project documentation (this file)
-└── utils/
-    ├── preprocessing.py        # Utility functions for data preprocessing
-    └── evaluation.py           # Utility functions for evaluating recommendations
-Key Files:
-main.py: This is the entry point for the video recommendation system. It orchestrates the workflow of loading data, preprocessing, and generating recommendations.
-recommendation_model.py: This contains the core logic of the recommendation algorithm. It defines how recommendations are generated using content-based or collaborative filtering techniques.
-utils/preprocessing.py: Contains functions to preprocess the data, such as handling missing values, encoding categorical variables, and scaling numerical features.
-utils/evaluation.py: Includes functions for evaluating the model’s performance using metrics like MAE (Mean Absolute Error) and RMSE (Root Mean Squared Error).
-Data Sources
-User Interaction Data: This dataset contains information on user interactions with the videos, such as user ID, video ID, and the type of interaction (e.g., like, view).
-Video Metadata: This dataset contains information about each video, such as its category, view-to-like ratio, and other relevant attributes.
-Example format of user_interactions.csv:
+User ID: Identifier for each user.
+Video ID: Identifier for each video.
+Interaction Type: Type of user interaction (e.g., like, view, etc.).
+Example:
 
 user_id	video_id	interaction_type
 1	101	like
 2	102	view
 1	103	view
-Example format of video_metadata.csv:
+Video Metadata:
+This dataset contains attributes about each video, such as:
+
+Video ID: Identifier for each video.
+Category: Genre or category of the video (e.g., comedy, documentary, music).
+View-Like Ratio: The ratio of views to likes, representing the video's popularity.
+Example:
 
 video_id	category	view_like_ratio	title
 101	comedy	3.5	Funny Cat Video
 102	documentary	4.2	Nature's Wonders
 103	music	5.1	Top 40 Music Hits
-Usage
-Step 1: Load Data
-The system loads user interaction data and video metadata from CSV files.
+5. Preprocessing
+The preprocessing stage cleans and transforms raw data to make it suitable for the recommendation algorithm. This typically includes:
 
+Handling Missing Data: Removing or filling missing values in both interaction and video metadata datasets.
+Encoding Categorical Data: Converting the video category to numeric values using encoding techniques like Label Encoding.
+Scaling Numerical Data: Normalizing or scaling numerical features like view_like_ratio to ensure they are on the same scale.
+6. Recommendation Algorithm
+The recommendation logic involves the following steps:
+
+6.1 Feature Matrix Creation
+We create a feature matrix using two key attributes of videos: view_like_ratio and category. The category is encoded numerically to facilitate similarity computation.
+6.2 Cosine Similarity
+The core of the recommendation system is calculating cosine similarity between the videos. This measures the cosine of the angle between two vectors representing videos. The smaller the angle, the more similar the videos are.
+6.3 Generating Recommendations
+For each video the user has interacted with, we compute similarity scores against all other videos. Based on these scores, the top N most similar videos are recommended.
+Exclusions: Videos that the user has already interacted with are excluded from the recommendation list.
+Threshold: A similarity threshold is applied to ensure that only videos with sufficient similarity are recommended.
+7. Handling Cold-Start Problems
+A cold-start problem occurs when there is insufficient data for a new user or new video. In this case, the algorithm can:
+
+New User: Recommend popular videos or videos based on general trends.
+New Video: Suggest the video based on its category or metadata similarities with previously popular videos.
+8. Evaluation Metrics
+The performance of the recommendation system is evaluated using the following metrics:
+
+8.1 RMSE (Root Mean Squared Error)
+Measures the difference between predicted ratings and actual user interactions.
+Formula:
+𝑅
+𝑀
+𝑆
+𝐸
+=
+1
+𝑛
+∑
+𝑖
+=
+1
+𝑛
+(
+𝑟
+𝑖
+−
+𝑟
+^
+𝑖
+)
+2
+RMSE= 
+n
+1
+​
+  
+i=1
+∑
+n
+​
+ (r 
+i
+​
+ − 
+r
+^
+  
+i
+​
+ ) 
+2
+ 
+​
+ 
+Where 
+𝑟
+𝑖
+r 
+i
+​
+  is the actual interaction, and 
+𝑟
+^
+𝑖
+r
+^
+  
+i
+​
+  is the predicted rating.
+8.2 MAE (Mean Absolute Error)
+Measures the average absolute difference between predicted ratings and actual ratings.
+Formula:
+𝑀
+𝐴
+𝐸
+=
+1
+𝑛
+∑
+𝑖
+=
+1
+𝑛
+∣
+𝑟
+𝑖
+−
+𝑟
+^
+𝑖
+∣
+MAE= 
+n
+1
+​
+  
+i=1
+∑
+n
+​
+ ∣r 
+i
+​
+ − 
+r
+^
+  
+i
+​
+ ∣
+9. Usage
+To run the video recommendation system:
+
+Prepare Your Data: Ensure that your user_interactions.csv and video_metadata.csv files are correctly placed in the /data folder.
+Preprocess the Data: Call the preprocessing function to clean and prepare your data.
+Generate Recommendations: Run the recommendation function by specifying the user interaction data and video metadata.
 python
 Copy code
-user_interaction_data = pd.read_csv('data/user_interactions.csv')
-video_data = pd.read_csv('data/video_metadata.csv')
-Step 2: Preprocess Data
-The preprocess_data() function handles missing values, encodes categories, and scales numerical data.
-
-python
-Copy code
-user_interaction_data, video_data = preprocess_data(user_interaction_data, video_data)
-Step 3: Generate Recommendations
-The recommendation system uses cosine similarity to compare videos based on metadata and suggest the most similar videos. You can specify the number of recommendations you need.
-
-python
-Copy code
-recommended_posts = recommend(user_interaction_data, video_data)
-print("Recommended Posts:", recommended_posts)
-Step 4: Evaluate the Model (optional)
-Evaluate the quality of recommendations using metrics like MAE and RMSE.
-
-python
-Copy code
-from utils.evaluation import calculate_rmse, calculate_mae
-
-rmse = calculate_rmse(user_interaction_data, recommended_posts)
-mae = calculate_mae(user_interaction_data, recommended_posts)
-
-print(f"RMSE: {rmse}")
-print(f"MAE: {mae}")
-Recommendation System Logic
-Content-Based Filtering:
-In this approach, we use the metadata of videos, such as the view-to-like ratio and category (encoded numerically), to measure similarity between videos. We use cosine similarity to determine how similar two videos are based on these features.
-
-The core logic involves:
-
-Encoding categorical features.
-Calculating a feature matrix based on view-to-like ratio and category.
-Computing the cosine similarity between each video.
-Recommending videos that are most similar to the ones the user has interacted with.
-Cold-Start Problem:
-For new users or videos that lack sufficient interaction data, we handle recommendations by using content-based techniques or randomly suggesting popular videos.
-
-Evaluation Metrics
-The model is evaluated using:
-
-RMSE (Root Mean Squared Error): Measures the difference between predicted ratings and actual ratings.
-MAE (Mean Absolute Error): Measures the average absolute difference between predicted ratings and actual ratings.
-You can adjust these metrics based on your specific use case.
+recommended_videos = recommend(user_interaction_data, video_data)
+10. Future Work & Enhancements
+Hybrid Models: Implement hybrid recommendation algorithms that combine content-based filtering and collaborative filtering for better personalization.
+Deep Learning: Explore the use of deep learning models (e.g., autoencoders) to improve recommendation accuracy.
+Real-Time Recommendations: Integrate the system with real-time data to provide immediate video suggestions based on live user behavior.
